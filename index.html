@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="index.css">
+    <title>URL Shortener</title>
+</head>
+<body>
+
+    <!-- 
+    The body includes a header, text input and button.
+    Also included are and img contaier for the QR code and a Paragraph for the shortened URL.
+    -->
+    <div class="container">
+        <H1>URL Shortener 🔗</H1>
+        <input type="text" id="text_input" placeholder="Enter URL:">
+        <button id="shorten_button">Shorten</button>
+        <img src="" alt="" id="qr_code">
+        <p id="shortened_url"></p>
+    </div>
+
+    <!--
+    Scripts are included at the end since you don't want them to increase page load time.
+    -->
+    <script type="module" src="index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+
+</body>
+</html>

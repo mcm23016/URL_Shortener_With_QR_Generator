@@ -1,0 +1,64 @@
+<!-- redirect.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Redirecting...</title>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-app.js";
+import { getDatabase, ref, get, update, query, orderByChild, equalTo } from "https://www.gstatic.com/firebasejs/9.15.0/firebase-database.js";
+
+const appSettings = {
+    databaseURL: "https://urlshorter-6f26b-default-rtdb.firebaseio.com/"
+};
+const app = initializeApp(appSettings);
+const database = getDatabase(app);
+
+// Get the short code from the URL
+const params = new URLSearchParams(window.location.search);
+const code = params.get("code");  // e.g., redirect.html?code=abc123
+
+if (!code) {
+    document.body.innerText = "Invalid link.";
+} else {
+    // Search for matching short URL
+    const urlListRef = ref(database, "urlList");
+    get(urlListRef).then(snapshot => {
+        if (!snapshot.exists()) {
+            document.body.innerText = "Link not found.";
+            return;
+        }
+
+        const data = snapshot.val();
+        let found = null;
+
+        for (let key in data) {
+            const shortUrl = data[key].shortened;
+            if (shortUrl.includes(code)) {
+                found = { key, ...data[key] };
+                break;
+            }
+        }
+
+        if (!found) {
+            document.body.innerText = "Link not found.";
+            return;
+        }
+
+        // Increment usage
+        const currentUses = found.uses || 0;
+        update(ref(database, `urlList/${found.key}`), { uses: currentUses + 1 });
+
+        // Redirect
+        window.location.href = found.original;
+    }).catch(err => {
+        document.body.innerText = "Error accessing database.";
+        console.error(err);
+    });
+}
+</script>
+</head>
+<body>
+Redirecting...
+</body>
+</html>
